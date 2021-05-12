@@ -1,11 +1,11 @@
 package application;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import db.DB;
-import db.DbIntegrityException;
+import db.DbException;
 
 public class Program {
 
@@ -14,9 +14,9 @@ public class Program {
 //		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		Connection conn = null;
 //		DB.closeConnection();
-//		Statement st = null;
+		Statement st = null;
 //		ResultSet rs = null;
-		PreparedStatement pst = null;
+//		PreparedStatement pst = null;
 //
 //		// ---------------------------fazendo consultas ao banco de dados-------------------------------
 //
@@ -35,9 +35,10 @@ public class Program {
 //			DB.closeStatement(st);
 //			DB.closeConnection();
 //		}
-		
-		// ----------------------------------Inserindo dados na tabela------------------------------
-		
+
+		// ----------------------------------Inserindo dados na
+		// tabela------------------------------
+
 //		try {
 //			conn = DB.getConnection();
 //			pst = conn.prepareStatement(
@@ -52,7 +53,7 @@ public class Program {
 //			pst.setDate(3, new java.sql.Date(sdf.parse("22/04/1995").getTime()));
 //			pst.setDouble(4, 3000.0);
 //			pst.setInt(5, 4);
-			
+
 //			pst = conn.prepareStatement("insert into department (name) values ('D1'), ('D2')",
 //					Statement.RETURN_GENERATED_KEYS);
 //			
@@ -75,8 +76,9 @@ public class Program {
 //			DB.closeStatement(pst);
 //			DB.closeConnection();
 //		}
-		
-		// --------------------------Fazendo alterações no banco de dados------------------------------------
+
+		// --------------------------Fazendo alterações no banco de
+		// dados------------------------------------
 
 //		try {
 //			conn = DB.getConnection();
@@ -98,29 +100,60 @@ public class Program {
 //			DB.closeStatement(pst);
 //			DB.closeConnection();
 //		}
-		
-		// -----------------------------Deletando do banco de dados------------------------------
-		
+
+		// -----------------------------Deletando do banco de
+		// dados------------------------------
+
+//		try {
+//			conn = DB.getConnection();
+//			
+//			pst = conn.prepareStatement("DELETE from department "
+//					+ "where "
+//					+ "ID = ?");
+//			
+//			pst.setInt(1, 5);
+//			
+//			int rowsAffected = pst.executeUpdate();
+//			
+//			System.out.println("Done! Rows affected: " + rowsAffected);
+//		} catch (SQLException e) {
+//			throw new DbIntegrityException(e.getMessage());
+//		} finally {
+//			DB.closeStatement(pst);
+//			DB.closeConnection();
+//		}
+
+		// --------------------------------------Fazendo
+		// transações-------------------------------------
+
 		try {
 			conn = DB.getConnection();
+			conn.setAutoCommit(false);
+			st = conn.createStatement();
+
+			int rows1 = st.executeUpdate("UPDATE seller set BaseSalary = 2090 where DepartmentId = 1");
+//			int x = 1;
+//			if (x < 2) {
+//				throw new SQLException("Fake error");
+//			}
+			int rows2 = st.executeUpdate("UPDATE seller set BaseSalary = 3090 where DepartmentId = 2");
 			
-			pst = conn.prepareStatement("DELETE from department "
-					+ "where "
-					+ "ID = ?");
-			
-			pst.setInt(1, 2);
-			
-			int rowsAffected = pst.executeUpdate();
-			
-			System.out.println("Done! Rows affected: " + rowsAffected);
+			conn.commit();
+
+			System.out.println("Rows 1: " + rows1);
+			System.out.println("Rows 2: " + rows2);
 		} catch (SQLException e) {
-			throw new DbIntegrityException(e.getMessage());
+			try {
+				conn.rollback();
+				throw new DbException("Transaction rolled back. Caused by: " + e.getMessage());
+			} catch (SQLException e1) {
+				throw new DbException("Error trying to rollback. Cause by: " + e.getMessage());
+			}
 		} finally {
-			DB.closeStatement(pst);
+			DB.closeStatement(st);
 			DB.closeConnection();
 		}
-		
+
 	}
 
 }
-	
