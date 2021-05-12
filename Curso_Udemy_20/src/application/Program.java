@@ -2,13 +2,10 @@ package application;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import db.DB;
+import db.DbIntegrityException;
 
 public class Program {
 
@@ -81,22 +78,43 @@ public class Program {
 		
 		// --------------------------Fazendo alterações no banco de dados------------------------------------
 
+//		try {
+//			conn = DB.getConnection();
+//			
+//			pst = conn.prepareStatement("UPDATE seller "
+//					+ "set BaseSalary = BaseSalary + ? "
+//					+ "where "
+//					+ "(DepartmentId = ?)");
+//			
+//			pst.setDouble(1, 200);
+//			pst.setInt(2, 2);
+//			
+//			int rowsAffected = pst.executeUpdate();
+//			
+//			System.out.println("Done! Rows affected: " + rowsAffected);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally {
+//			DB.closeStatement(pst);
+//			DB.closeConnection();
+//		}
+		
+		// -----------------------------Deletando do banco de dados------------------------------
+		
 		try {
 			conn = DB.getConnection();
 			
-			pst = conn.prepareStatement("UPDATE seller "
-					+ "set BaseSalary = BaseSalary + ? "
+			pst = conn.prepareStatement("DELETE from department "
 					+ "where "
-					+ "(DepartmentId = ?)");
+					+ "ID = ?");
 			
-			pst.setDouble(1, 200);
-			pst.setInt(2, 2);
+			pst.setInt(1, 2);
 			
 			int rowsAffected = pst.executeUpdate();
 			
 			System.out.println("Done! Rows affected: " + rowsAffected);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DbIntegrityException(e.getMessage());
 		} finally {
 			DB.closeStatement(pst);
 			DB.closeConnection();
