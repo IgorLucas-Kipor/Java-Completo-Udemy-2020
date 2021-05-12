@@ -14,14 +14,14 @@ public class Program {
 
 	public static void main(String[] args) {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		Connection conn = null;
 //		DB.closeConnection();
 //		Statement st = null;
 //		ResultSet rs = null;
 		PreparedStatement pst = null;
 //
-//		// fazendo consultas ao banco de dados
+//		// ---------------------------fazendo consultas ao banco de dados-------------------------------
 //
 //		try {
 //			conn = DB.getConnection();
@@ -39,10 +39,10 @@ public class Program {
 //			DB.closeConnection();
 //		}
 		
-		// Inserindo dados na tabela
+		// ----------------------------------Inserindo dados na tabela------------------------------
 		
-		try {
-			conn = DB.getConnection();
+//		try {
+//			conn = DB.getConnection();
 //			pst = conn.prepareStatement(
 //					"Insert into seller "
 //					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
@@ -56,29 +56,53 @@ public class Program {
 //			pst.setDouble(4, 3000.0);
 //			pst.setInt(5, 4);
 			
-			pst = conn.prepareStatement("insert into department (name) values ('D1'), ('D2')",
-					Statement.RETURN_GENERATED_KEYS);
+//			pst = conn.prepareStatement("insert into department (name) values ('D1'), ('D2')",
+//					Statement.RETURN_GENERATED_KEYS);
+//			
+//			int rowsAffected = pst.executeUpdate();
+//			if (rowsAffected > 0) {
+//				ResultSet rs = pst.getGeneratedKeys();
+//				while (rs.next()) {
+//					int id = rs.getInt(1);
+//					System.out.println("Done! Id = " + id);
+//				}
+//			} else {
+//				System.out.println("No row affected.");
+//			}
+//			
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+////		} catch (ParseException e) {
+////			e.printStackTrace();
+//		} finally {
+//			DB.closeStatement(pst);
+//			DB.closeConnection();
+//		}
+		
+		// --------------------------Fazendo alterações no banco de dados------------------------------------
+
+		try {
+			conn = DB.getConnection();
+			
+			pst = conn.prepareStatement("UPDATE seller "
+					+ "set BaseSalary = BaseSalary + ? "
+					+ "where "
+					+ "(DepartmentId = ?)");
+			
+			pst.setDouble(1, 200);
+			pst.setInt(2, 2);
 			
 			int rowsAffected = pst.executeUpdate();
-			if (rowsAffected > 0) {
-				ResultSet rs = pst.getGeneratedKeys();
-				while (rs.next()) {
-					int id = rs.getInt(1);
-					System.out.println("Done! Id = " + id);
-				}
-			} else {
-				System.out.println("No row affected.");
-			}
 			
+			System.out.println("Done! Rows affected: " + rowsAffected);
 		} catch (SQLException e) {
 			e.printStackTrace();
-//		} catch (ParseException e) {
-//			e.printStackTrace();
 		} finally {
 			DB.closeStatement(pst);
 			DB.closeConnection();
 		}
-
+		
 	}
 
 }
+	
