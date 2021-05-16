@@ -41,7 +41,7 @@ public class ViewController implements Initializable {
 	}
 
 	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
+	public void initialize(URL url, ResourceBundle rb1) {
 		Constraints.setTextFieldDouble(txtFirstNumber);
 		Constraints.setTextFieldDouble(txtSecondNumber);
 		Constraints.setTextFieldMaxLength(txtFirstNumber, 8);
